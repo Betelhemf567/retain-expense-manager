@@ -11,3 +11,11 @@ export const formatDate = (iso: string): string =>
 export const toDateInput = (iso: string): string => iso.slice(0, 10);
 
 export const todayInput = (): string => new Date().toISOString().slice(0, 10);
+
+/** Current month as YYYY-MM (UTC, matching the API). */
+export const currentMonth = (): string => new Date().toISOString().slice(0, 7);
+
+export const formatMonth = (month: string): string => {
+  const [y, m] = month.split('-').map(Number);
+  return new Date(Date.UTC(y, m - 1, 1)).toLocaleDateString(undefined, { month: 'long', year: 'numeric', timeZone: 'UTC' });
+};
