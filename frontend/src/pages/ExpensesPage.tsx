@@ -49,7 +49,7 @@ export default function ExpensesPage() {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [result, setResult] = useState<PaginatedExpenses | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loadedKey, setLoadedKey] = useState('');
   const [error, setError] = useState('');
   const [refreshKey, setRefreshKey] = useState(0);
 
@@ -61,23 +61,26 @@ export default function ExpensesPage() {
 
   const refresh = useCallback(() => setRefreshKey((k) => k + 1), []);
 
+  // Loading is derived: we are loading until the response for the current filters/refresh has arrived.
+  const requestKey = `${JSON.stringify(filters)}|${refreshKey}`;
+  const loading = loadedKey !== requestKey;
+
   // Re-fetch whenever a Redux filter changes or after a create/edit/delete.
   useEffect(() => {
     const controller = new AbortController();
-    setLoading(true);
     fetchExpenses(filters, controller.signal)
       .then((data) => {
         setResult(data);
         setError('');
-        setLoading(false);
+        setLoadedKey(requestKey);
       })
       .catch((err: unknown) => {
         if (controller.signal.aborted) return;
         setError(getErrorMessage(err));
-        setLoading(false);
+        setLoadedKey(requestKey);
       });
     return () => controller.abort();
-  }, [filters, refreshKey]);
+  }, [filters, refreshKey, requestKey]);
 
   // If the last item on a page is deleted, step back one page.
   useEffect(() => {

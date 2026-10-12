@@ -15,7 +15,7 @@ export default function DashboardPage() {
   const { user } = useAuth();
   const [month, setMonth] = useState(currentMonth());
   const [data, setData] = useState<DashboardData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loadedKey, setLoadedKey] = useState('');
   const [error, setError] = useState('');
   const [refreshKey, setRefreshKey] = useState(0);
   const [budgetOpen, setBudgetOpen] = useState(false);
@@ -23,22 +23,25 @@ export default function DashboardPage() {
 
   const refresh = useCallback(() => setRefreshKey((k) => k + 1), []);
 
+  // Loading is derived: we are loading until the response for the current month/refresh has arrived.
+  const requestKey = `${month}|${refreshKey}`;
+  const loading = loadedKey !== requestKey;
+
   useEffect(() => {
     const controller = new AbortController();
-    setLoading(true);
     fetchDashboard(month, controller.signal)
       .then((result) => {
         setData(result);
         setError('');
-        setLoading(false);
+        setLoadedKey(requestKey);
       })
       .catch((err: unknown) => {
         if (controller.signal.aborted) return;
         setError(getErrorMessage(err));
-        setLoading(false);
+        setLoadedKey(requestKey);
       });
     return () => controller.abort();
-  }, [month, refreshKey]);
+  }, [month, refreshKey, requestKey]);
 
   const overBudget = data !== null && data.remaining !== null && data.remaining < 0;
 

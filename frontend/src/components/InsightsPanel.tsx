@@ -62,24 +62,24 @@ function CategoryTable({ title, rows, showSpent }: { title: string; rows: Catego
 
 export function InsightsPanel() {
   const [data, setData] = useState<AdminInsights | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loadedKey, setLoadedKey] = useState(-1);
   const [error, setError] = useState('');
   const [refreshKey, setRefreshKey] = useState(0);
   const refresh = useCallback(() => setRefreshKey((k) => k + 1), []);
+  const loading = loadedKey !== refreshKey;
 
   useEffect(() => {
     const controller = new AbortController();
-    setLoading(true);
     fetchInsights(controller.signal)
       .then((result) => {
         setData(result);
         setError('');
-        setLoading(false);
+        setLoadedKey(refreshKey);
       })
       .catch((err: unknown) => {
         if (controller.signal.aborted) return;
         setError(getErrorMessage(err));
-        setLoading(false);
+        setLoadedKey(refreshKey);
       });
     return () => controller.abort();
   }, [refreshKey]);
