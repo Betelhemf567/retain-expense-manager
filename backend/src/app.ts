@@ -10,7 +10,13 @@ import { errorHandler } from './utils/http';
 
 const app = express();
 
-app.use(cors({ origin: process.env.CLIENT_URL?.split(',') ?? true }));
+// CLIENT_URL may hold several comma-separated origins (no trailing slash needed).
+const allowedOrigins = (process.env.CLIENT_URL ?? '')
+  .split(',')
+  .map((o) => o.trim().replace(/\/$/, ''))
+  .filter(Boolean);
+
+app.use(cors({ origin: allowedOrigins.length > 0 ? allowedOrigins : true }));
 app.use(express.json());
 
 app.get('/api/health', (_req, res) => res.json({ status: 'ok' })); // hit this to warm up Render before the demo
