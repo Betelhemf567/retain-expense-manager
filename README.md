@@ -2,9 +2,8 @@
 
 Retain is a full-stack web app for recording personal expenses, setting a monthly budget, and seeing where your money goes. Regular users manage their own expenses and budget; admins manage categories and view platform-wide insights.
 
-> **Live app:** `<ADD-VERCEL-URL-HERE>`
-> **API:** `<ADD-RENDER-URL-HERE>/api/health`
-> **Demo video:** `<ADD-LINK-IF-REQUIRED>`
+- **Live app:** https://retain-expense-manager-psi.vercel.app
+- **API health check:** https://retain-api-xgu2.onrender.com/api/health
 
 ## Demo accounts
 
