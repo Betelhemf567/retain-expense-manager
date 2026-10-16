@@ -1,3 +1,6 @@
+import PaymentsOutlinedIcon from '@mui/icons-material/PaymentsOutlined';
+import SavingsOutlinedIcon from '@mui/icons-material/SavingsOutlined';
+import EmojiEventsOutlinedIcon from '@mui/icons-material/EmojiEventsOutlined';
 import { Alert, Box, Button, CircularProgress, Snackbar, Stack, TextField, Typography } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 import { getErrorMessage } from '../api/client';
@@ -84,17 +87,21 @@ export default function DashboardPage() {
           <BudgetCard summary={data} onEdit={() => setBudgetOpen(true)} />
 
           <Box sx={{ display: 'grid', gap: 2, gridTemplateColumns: { xs: '1fr', sm: 'repeat(3, 1fr)' } }}>
-            <StatCard label="Total spent" value={formatMoney(data.totalSpent)} caption={`in ${formatMonth(month)}`} />
+            <StatCard label="Total spent" value={formatMoney(data.totalSpent)} caption={`in ${formatMonth(month)}`} icon={<PaymentsOutlinedIcon />} accent="#3b82f6" />
             <StatCard
               label="Remaining budget"
               value={data.remaining === null ? 'No budget' : formatMoney(data.remaining)}
               caption={data.remaining === null ? 'Set a budget above' : overBudget ? 'You are over budget' : 'Left to spend this month'}
               color={overBudget ? 'error.main' : data.remaining === null ? 'text.primary' : 'success.main'}
+              icon={<SavingsOutlinedIcon />}
+              accent={overBudget ? '#ef4444' : '#1b7f5c'}
             />
             <StatCard
               label="Highest expense"
               value={data.highestExpense ? formatMoney(data.highestExpense.amount) : '—'}
               caption={data.highestExpense ? `${data.highestExpense.title} · ${data.highestExpense.category.name}` : 'No expenses yet'}
+              icon={<EmojiEventsOutlinedIcon />}
+              accent="#f59e0b"
             />
           </Box>
 
